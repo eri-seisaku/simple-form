@@ -52,12 +52,12 @@ export default {
           }
       }
   },
-  created() { // createdではDOMが作成されていないタイミング
-    db.collection('userMessages').get().then((querySnapshot) => {
-      const items = querySnapshot.docs.map(doc => doc.data())
-      console.log('検証：' + items);
-    })
-  },
+  // created() { // createdではDOMが作成されていないタイミング
+  //   db.collection('userMessages').get().then((querySnapshot) => {
+  //     const items = querySnapshot.docs.map(doc => doc.data())
+  //     console.log('検証：' + items);
+  //   })
+  // },
   methods: {
     handleSubmit() { // 送信を押すと登録する
       let userMessage = {

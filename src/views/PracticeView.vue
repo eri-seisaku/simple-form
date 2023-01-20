@@ -39,12 +39,12 @@
 <script>
 import { db } from '../firebase/config'
 
-// コンソールに表示するだけ
-db.collection("userMessages").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
-    })
-});
+// // コンソールに表示するだけ
+// db.collection("userMessages").get().then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//       console.log(doc.id, " => ", doc.data());
+//     })
+// });
 
 // コンソールに表示するだけだけどkeyとvalueに分けている
 const sampleColRef = db.collection('userMessages');
