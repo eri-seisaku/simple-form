@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import SignUpView from '../views/SignUpView.vue'
+import LoginView from '../views/LoginView.vue'
+import ReserveView from '../views/reserve/ReserveView.vue'
 import ResultView from '../views/ResultView.vue'
 import PracticeView from '../views/PracticeView.vue'
-import PracticeView2 from '../views/PracticeView2.vue'
 import ErrorView from '../views/ErrorView.vue'
-
+import EventCalender from '../views/EventCalender.vue'
+import AdminView from '../views/admin/AdminView.vue'
 
 Vue.use(VueRouter)
 
@@ -14,6 +17,21 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: SignUpView
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginView
+  },
+  {
+    path: '/reserve',
+    name: 'reserve',
+    component: ReserveView
   },
   {
     path: '/result',
@@ -27,14 +45,19 @@ const routes = [
     component: PracticeView
   },
   {
-    path: '/practice2',
-    name: 'practice2',
-    component: PracticeView2
-  },
-  {
     path: '/error',
     name: 'error',
     component: ErrorView
+  },
+  {
+    path: '/calender',
+    name: 'calender',
+    component: EventCalender
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView
   }
 ]
 
