@@ -73,7 +73,9 @@
     </v-main>
 
     <v-footer color="primary" dark app>
-      Vuetify
+      <small class="py-2 white--text text-center">
+        © 2023 Eri Imanishi
+      </small>
     </v-footer>
   </v-app>
 </template>
