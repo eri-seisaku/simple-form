@@ -63,13 +63,7 @@
     </v-app-bar>
 
     <v-main>
-      <v-date-picker
-                  v-model="dates"
-                  single
-                  no-title
-                  locale="jp-ja"
-                  :day-format="date => new Date(date).getDate()"
-                ></v-date-picker>
+<!-- 中身を入れる -->
     </v-main>
 
     <v-footer color="primary" dark app>
