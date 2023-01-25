@@ -27,7 +27,7 @@
           active-class="deep-purple--text text--accent-4"
         >
         <!-- Home -->
-          <router-link to="/signin">
+          <router-link to="/">
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-home</v-icon>
@@ -35,37 +35,6 @@
               <v-list-item-title>Home</v-list-item-title>
             </v-list-item>
           </router-link>
-        <!-- Result -->
-          <router-link href="/result">
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Result</v-list-item-title>
-            </v-list-item>
-          </router-link>
-
-        <!-- Practice -->
-        <router-link href="/practice">
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Practice</v-list-item-title>
-          </v-list-item>
-        </router-link>
-
-        <!-- EventCalender -->
-        <router-link href="/calender">
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-alert-decagram</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>EventCalender</v-list-item-title>
-          </v-list-item>
-        </router-link>
-
-
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -382,6 +351,8 @@ a {
   text-decoration: none;
 }
 .container {
+  width: 100%;
+  max-width: 1000px;
   background: #F1F2F6;
 }
 .container.container--fluid {

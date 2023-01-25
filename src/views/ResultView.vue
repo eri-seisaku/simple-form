@@ -1,8 +1,8 @@
 <template>
   <section>
-    <div class="container">
+    <div class="wrapper">
       <h2 class="text-center">1.登録</h2>
-        <form @submit.prevent="handleSubmit">
+        <form @submit.prevent="handleSubmit" id="form">
 
           <div class="form-group">
             <label for="date">Data:</label>
@@ -42,45 +42,53 @@
         </form>
     </div>
 
-    <div class="container">
+    <div class="wrapper">
       <h2 class="text-center">2.登録内容確認</h2>
-      <div class="box">
-        <p>Date: {{ date }}</p>
-        <p>Name: {{ name }}</p>
-        <p>Email: {{ email }}</p>
-        <p>Message: {{ message }}</p>
-      </div>
+      <p>Date: {{ date }}</p>
+      <p>Name: {{ name }}</p>
+      <p>Email: {{ email }}</p>
+      <p>Message: {{ message }}</p>
     </div>
 
-    <div class="container">
+    <div class="wrapper">
       <h2 class="text-center">取得</h2>
-      <div class="box">
-        <ul>
-          <li v-for="item in items" :key="item.id">
-            <div>name:{{ item.name }}</div>
-            <div>email:{{ item.email }}</div>
-            <div>message:{{ item.message }}</div>
-            <div>date:{{ item.date }}</div>
-          </li>
-        </ul>
-      </div>
+      <ul>
+        <li v-for="item in items" :key="item.id">
+          <div>name:{{ item.name }}</div>
+          <div>email:{{ item.email }}</div>
+          <div>message:{{ item.message }}</div>
+          <div>date:{{ item.date }}</div>
+        </li>
+      </ul>
     </div>
-
-    <div class="container">
+    <!-- @click:event="" イベントをクリックしたとき-->
+    <div class="wrapper">
       <h2 class="text-center">カレンダーにイベントを表示</h2>
       <v-calendar
         locale="ja-jp"
         :events="events"
         @change="getEvents"
+        @click:event="alertMessage"
       ></v-calendar>
     </div>
-  </section>
 
+    <v-dialog v-model="dialog">
+      <div style="background:white;color: #222222;">
+        <h2 class="text-center">2.登録内容確認</h2>
+        <p>Date: {{ date }}</p>
+        <p>Name: {{ name }}</p>
+        <p>Email: {{ email }}</p>
+        <p>Message: {{ message }}</p>
+      </div>
+    </v-dialog>
+  
+  </section>
 </template>
 
 <script>
 import { db } from '../firebase/config'
 import moment from "moment";
+
 export default {
   data() {
     return {
@@ -90,23 +98,30 @@ export default {
       date: '',
       items: [],
       events: [],
+      dialog: false
     }
   },
   created() {
     this.getData();
+    this.getEvents();
   },
-  methods: {
+  methods: { // 入力した値を送信
     handleSubmit() {
+      const form = document.getElementById("form");
+      if(form.name.data || form.email.value === ''){
+        console.log('入力しないと送信できません');
+        return false
+      }
       let userMessage = {
         name: this.name,
         email: this.email,
         message: this.message,
         date: this.date
       }
-
       db.collection('userMessages').add(userMessage)
+      console.log('送信しました');
     },
-    getData() {
+    getData() { // 値を取得
       db.collection("userMessages").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           // console.log(doc.id, " => ", doc.data());
@@ -117,18 +132,20 @@ export default {
     getEvents() {
       db.collection("userMessages").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          const events = [
-            {
-              name: doc.data().name,
-              start: moment(doc.data().date).toDate(),
-              color: 'blue'
-            }
-          ];
-          this.events = events;
-          console.log(events);
+          const event = {
+            name: doc.data().name,
+            start: moment(doc.data().date).toDate(),
+            color: 'blue'
+          };
+          this.events.push(event);
         })
       });
     },
+    alertMessage() {
+      this.name = this.items[0].name;
+      this.dialog = true;
+      // this.getEvents();
+    }
   }
 }
 </script>
@@ -143,7 +160,7 @@ section {
   justify-content: center;
   flex-direction: column;
 }
-.container {
+.wrapper {
   width: 90%;
   max-width: 500px;
   margin: 0 auto 30px auto;
