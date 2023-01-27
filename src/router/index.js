@@ -8,6 +8,7 @@ import ResultView from '../views/ResultView.vue'
 import AdminView from '../views/admin/AdminView.vue'
 import PracticeView from '../views/PracticeView.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [
