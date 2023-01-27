@@ -86,15 +86,15 @@ export default {
     </div>
 
     <div class="wrapper">
-      <h2 class="text-center">全てのイベント</h2>
-      <ol>
+      <h2 class="text-center">取得</h2>
+      <ul>
         <li v-for="item in items" :key="item.id">
           <div>name:{{ item.name }}</div>
           <div>email:{{ item.email }}</div>
           <div>message:{{ item.message }}</div>
           <div>date:{{ item.date }}</div>
         </li>
-      </ol>
+      </ul>
     </div>
     <!-- @click:event="" イベントをクリックしたとき-->
     <div class="wrapper">
@@ -103,8 +103,8 @@ export default {
         locale="ja-jp"
         :events="events"
         @change="getEvents"
-        @click:event="messageDialog"
-        @click:date="messageDialog"
+        @click:event="alertMessage"
+        @click:date="alertMessage"
       ></v-calendar>
     </div>
 
@@ -114,15 +114,7 @@ export default {
     >
       <div style="background:white;color: #222222; padding:15px;">
         <h2 class="text-center">{{ `${title}の予定` }}</h2>
-        <!-- <div>{{ filteredData }}</div> -->
-        <ol>
-          <li v-for="data in filteredData" :key="data.id">
-            <div>日付：{{ data.date }}</div>
-            <div>名前：{{ data.name }}</div>
-            <div>メールアドレス：{{ data.email }}</div>
-            <div>メッセージ：{{ data.message }}</div>
-          </li>
-        </ol>
+        <div>{{ filteredData }}</div>
         <!-- <p>Date: {{ date }}</p>
         <p>Name: {{ name }}</p>
         <p>Email: {{ email }}</p>
@@ -154,10 +146,12 @@ export default {
   },
   created() {
     this.getData();
+    // this.getEvents();
   },
   methods: { // 入力した値を送信
     handleSubmit() {
       if(this.date === ''){
+        // console.log('日付を入力しないと送信できません');
         this.errors.push("日付を選択してください");
         // const button = document.getElementById("button");
         // button.disabled = true;
@@ -194,14 +188,66 @@ export default {
         })
       });
     },
-    messageDialog(date) {
-      this.title = date.day.date; // クリックした日付をダイアログのタイトルにするため
+    // checkForm(e) {
+    //   if (this.date && this.name) {
+    //     return true;
+    //   }
+    //   this.errors = [];
+    //   if (!this.name) {
+    //     this.errors.push('Name required.');
+    //   }
+    //   if (!this.date) {
+    //     this.errors.push('Age required.');
+    //   }
+    //   e.preventDefault();
+    // },
+    // alertMessage(day) {
+    //   this.name = this.items[0].name;
+    //   this.email = this.items[0].email;
+    //   this.message = this.items[0].message;
+    //   this.date = this.items[0].date;
+    //   // ここまではfirebaseに登録した値の0番目を取得している
+    //   this.dialog = true;
+    //   console.log(day);
+    // },
+    // alertMessage(date) {
+    //   console.log(`クリックした日付:${date.day.date}`);
+    //   for (const element of this.items) {
+    //     console.log(`エレメントデータ:${element.date}`);
+    //   let result = element.date.indexOf(date.day.date)
+    //   console.log(result);
+      
+    //   // let answer = element.date.filter( function(value) {
+    //   //   return value === date.day.date;
+    //   // })
+      
+    //   // console.log(answer);
+    //   }
+    //   this.dialog = true;
+    // },// クリックした日付とfirebaseのデータを比べて同じなら0、違うなら-1を返す
+    // alertMessage(date) {
+    //   this.title = date.day.date;
+    //   console.log(this.items[2]);
+    //   // console.log(date.day.date);
+    //   for (const element of this.items){
+    //     // console.log("Element" + element.date);
+    //     let result = element.date.indexOf(date.day.date); // indexOfは最初に一致した要素のみなので使えない
+    //     console.log(this.items[result]);
+    //     // this.name = this.items[result].name;
+    //     // this.email = this.items[result].email;
+    //     // this.message = this.items[result].message;
+    //     // this.date = this.items[result].date;
+    //   }
+    //   this.dialog = true;
+    // }
+    alertMessage(date) {
+      this.title = date.day.date;
       const allData = this.items;
-      const filteredData = allData.filter(data => data.date === date.day.date) //フィルターでクリックした日付と同じイベントを絞る
+      const filteredData = allData.filter(data => data.date === date.day.date)
       this.filteredData = filteredData;
       console.log(filteredData);
       this.dialog = true;
-    },
+    }
   },
   computed: {
     // checkForm() {
@@ -219,6 +265,9 @@ export default {
 * {
   box-sizing: border-box;
   font-family: "Montserrat";
+}
+li {
+  list-style: none;
 }
 section {
   display: flex;
