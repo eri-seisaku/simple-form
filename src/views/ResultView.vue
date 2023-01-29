@@ -1,9 +1,25 @@
+<!-- <template>
+  <div class="home">
+    <MyCalender />
+  </div>
+</template>
+
+<script>
+import MyCalender from '@/components/MyCalender.vue'
+
+export default {
+  components: {
+    MyCalender
+  }
+}
+
+</script> -->
 <template>
   <section>
     <div class="wrapper">
       <h2 class="text-center">1.登録</h2>
         <form @submit.prevent="handleSubmit" id="form">
-
+        <!-- <form @submit="handleSubmit" id="form"> -->
           <div class="form-group">
             <label for="date">Data:</label>
             <v-date-picker
@@ -14,16 +30,17 @@
               locale="jp-ja"
               :day-format="date => new Date(date).getDate()"
             ></v-date-picker>
+
           </div>
 
           <div class="form-group">
             <label for="fullName">Full name:</label>
-            <input type="text" id="fullName" v-model="name">
+            <input type="text" id="fullName" v-model="name" required>
           </div>
 
           <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" v-model="email">
+            <input type="email" id="email" v-model="email" required>
           </div>
 
           <div class="form-group">
@@ -38,7 +55,25 @@
                 </option>
               </select>
             </div> -->
-            <button type="submit" class="button">送信</button>
+            <button 
+              type="submit" 
+              class="button" 
+              id="button"
+            >
+              送信
+            </button>
+
+            <div v-if="errors.length" style="margin-top:30px;">
+              <v-alert
+                dense
+                outlined
+                type="error"
+                v-for="error in errors"
+                :key="error.id"
+              >
+              {{ error }}
+              </v-alert>
+            </div>
         </form>
     </div>
 
@@ -51,15 +86,15 @@
     </div>
 
     <div class="wrapper">
-      <h2 class="text-center">取得</h2>
-      <ul>
+      <h2 class="text-center">全てのイベント</h2>
+      <ol>
         <li v-for="item in items" :key="item.id">
           <div>name:{{ item.name }}</div>
           <div>email:{{ item.email }}</div>
           <div>message:{{ item.message }}</div>
           <div>date:{{ item.date }}</div>
         </li>
-      </ul>
+      </ol>
     </div>
     <!-- @click:event="" イベントをクリックしたとき-->
     <div class="wrapper">
@@ -68,17 +103,35 @@
         locale="ja-jp"
         :events="events"
         @change="getEvents"
-        @click:event="alertMessage"
+        @click:event="messageDialog"
+        @click:date="messageDialog"
       ></v-calendar>
+      <!-- <v-calendar
+        locale="ja-jp"
+        :events="events"
+        @change="getEvents"
+      ></v-calendar> -->
     </div>
 
-    <v-dialog v-model="dialog">
-      <div style="background:white;color: #222222;">
-        <h2 class="text-center">2.登録内容確認</h2>
-        <p>Date: {{ date }}</p>
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
+      <div style="background:white;color: #222222; padding:15px;">
+        <h2 class="text-center">{{ `${title}の予定` }}</h2>
+        <!-- <div>{{ filteredData }}</div> -->
+        <ol>
+          <li v-for="data in filteredData" :key="data.id">
+            <div>日付：{{ data.date }}</div>
+            <div>名前：{{ data.name }}</div>
+            <div>メールアドレス：{{ data.email }}</div>
+            <div>メッセージ：{{ data.message }}</div>
+          </li>
+        </ol>
+        <!-- <p>Date: {{ date }}</p>
         <p>Name: {{ name }}</p>
         <p>Email: {{ email }}</p>
-        <p>Message: {{ message }}</p>
+        <p>Message: {{ message }}</p> -->
       </div>
     </v-dialog>
   
@@ -96,30 +149,35 @@ export default {
       email: '',
       message: '',
       date: '',
+      title: '',
       items: [],
       events: [],
-      dialog: false
+      errors: [],
+      filteredData: [],
+      dialog: false,
     }
   },
   created() {
     this.getData();
-    this.getEvents();
   },
   methods: { // 入力した値を送信
     handleSubmit() {
-      const form = document.getElementById("form");
-      if(form.name.data || form.email.value === ''){
-        console.log('入力しないと送信できません');
+      if(this.date === ''){
+        this.errors.push("日付を選択してください");
+        // const button = document.getElementById("button");
+        // button.disabled = true;
         return false
-      }
-      let userMessage = {
-        name: this.name,
-        email: this.email,
-        message: this.message,
-        date: this.date
-      }
+      } else {
+        let userMessage = {
+          name: this.name,
+          email: this.email,
+          message: this.message,
+          date: this.date
+        }
       db.collection('userMessages').add(userMessage)
+      this.errors = [];
       console.log('送信しました');
+      }
     },
     getData() { // 値を取得
       db.collection("userMessages").get().then((querySnapshot) => {
@@ -129,23 +187,57 @@ export default {
         })
       });
     },
+    // getEvents() {
+    //   db.collection("userMessages").get().then((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       const event = {
+    //         name: doc.data().name,
+    //         start: moment(doc.data().date).toDate(),
+    //         color: 'blue'
+    //       };
+    //       this.events.push(event);
+    //     })
+    //   });
+    // },
     getEvents() {
       db.collection("userMessages").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           const event = {
             name: doc.data().name,
             start: moment(doc.data().date).toDate(),
-            color: 'blue'
+            // color: 'blue'
           };
           this.events.push(event);
+          // console.log(doc.data().name);
+          const allData = doc.data();
+          console.log(allData.name);
+          if(allData.name === 'エリア赤'){ // 全てのデータに特定の文字がある場合はkeyとvalueを追加
+            console.log('赤追加します');
+            event['color'] = 'red';
+          }else if(allData.name === 'エリア緑'){
+            console.log('緑追加します');
+            event['color'] = 'green';
+          }
         })
       });
     },
-    alertMessage() {
-      this.name = this.items[0].name;
+    messageDialog(date) {
+      this.title = date.day.date; // クリックした日付をダイアログのタイトルにするため
+      const allData = this.items;
+      const filteredData = allData.filter(data => data.date === date.day.date) //フィルターでクリックした日付と同じイベントを絞る
+      this.filteredData = filteredData;
+      console.log(filteredData);
       this.dialog = true;
-      // this.getEvents();
-    }
+    },
+  },
+  computed: {
+    // checkForm() {
+    //   if (this.date === '') {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // }
   }
 }
 </script>

@@ -7,6 +7,7 @@ import ReserveView from '../views/reserve/ReserveView.vue'
 import ResultView from '../views/ResultView.vue'
 import AdminView from '../views/admin/AdminView.vue'
 import PracticeView from '../views/PracticeView.vue'
+import ChangeColor from '../views/ChangeColor.vue'
 
 
 Vue.use(VueRouter)
@@ -47,6 +48,11 @@ const routes = [
     path: '/practice',
     name: 'practice',
     component: PracticeView
+  },
+  {
+    path: '/color',
+    name: 'color',
+    component: ChangeColor
   }
 ]
 
